@@ -91,9 +91,9 @@
             // næsteKnap
             // 
             this.næsteKnap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.næsteKnap.Location = new System.Drawing.Point(860, 464);
+            this.næsteKnap.Location = new System.Drawing.Point(556, 464);
             this.næsteKnap.Name = "næsteKnap";
-            this.næsteKnap.Size = new System.Drawing.Size(266, 62);
+            this.næsteKnap.Size = new System.Drawing.Size(570, 62);
             this.næsteKnap.TabIndex = 27;
             this.næsteKnap.Text = "Næste 15";
             this.næsteKnap.UseVisualStyleBackColor = false;
@@ -160,7 +160,7 @@
             // 
             this.visKnap.Location = new System.Drawing.Point(556, 464);
             this.visKnap.Name = "visKnap";
-            this.visKnap.Size = new System.Drawing.Size(281, 62);
+            this.visKnap.Size = new System.Drawing.Size(570, 62);
             this.visKnap.TabIndex = 17;
             this.visKnap.Text = "Vis brugere 1-15";
             this.visKnap.UseVisualStyleBackColor = true;
