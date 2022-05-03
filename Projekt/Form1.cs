@@ -18,22 +18,23 @@ namespace Projekt
             //Gemmer næste knappen
             næsteKnap.Enabled = false;
             næsteKnap.Visible = false;
-        }
-        private void gemKnap_Click(object sender, EventArgs e) //Metode der kører når jeg trykker på gem knappen i programmet
-        {
             //Laver en mappe hvor jeg kan putte database textfilen ind
             Directory.CreateDirectory(@"c:\Jeppe-Leif-Nathalie-Parking");
             // Hvis ikke der er påbegynt en database, laver denne kode en ny fil på ovenstående destination
             if (!File.Exists(path))
             {
                 // Tilføjer Brian Mørk til databasen
-                File.WriteAllText(path, "Christian, Mørk, Vedbæk Strandvej 2, 2950, Vedbæk, 50251287, cm@cmis.dk" + Environment.NewLine);
+                string brianText = "Christian, Mørk, Vedbæk Strandvej 2, 2950, Vedbæk, 50251287, cm@cmis.dk"+Environment.NewLine;
+                File.WriteAllText(path, brianText);
             }
+        }
+        private void gemKnap_Click(object sender, EventArgs e) //Metode der kører når jeg trykker på gem knappen i programmet
+        {
             bool telNrExists = false;
             bool emailExists = false;
             string telNrCheck = telBox.Text;
             string emailCheck = emailBox.Text;
-            // Foreach lække så den taker alle linjer som indeholder søgekriteriet, og ikke kun den første linje
+            // Foreach løkke så den tager alle linjer som indeholder søgekriteriet, og ikke kun den første linje
             foreach (var line in File.ReadLines(path))
             {
                 // Hvis en af linjerne indeholder telefon nummer eller email
@@ -112,6 +113,12 @@ namespace Projekt
             søgBox.Text = "";
             emailBox.Text = "";
         }
+        public void dataBoxOpstilling() //Metode til opstillingen af kolonnerne i databoksen
+        {
+            // tilføjer tekst og colums til den hvide databox
+            dataKomplet.Columns.Add("NR", 40, HorizontalAlignment.Center);
+            dataKomplet.Columns.Add("Data", 525, HorizontalAlignment.Center);
+        }
         public void visKnap_Click(object sender, EventArgs e) //Metode til at udprinte de 0 - 15 personer til side 1 i databasen
         {
             int counter = 0;
@@ -135,9 +142,7 @@ namespace Projekt
             }
             // ændre knappens tekst efter første brug
             visKnap.Text = "Tilbage til start";
-            // tilføjer tekst og colums til den hvide databox
-            dataKomplet.Columns.Add("NR", 40, HorizontalAlignment.Center);
-            dataKomplet.Columns.Add("Data", 600, HorizontalAlignment.Center);
+            dataBoxOpstilling();
             // this betyder at vi kan benytte os af værdien uden for void metoden
             int dataNum = 0;
 
@@ -195,8 +200,7 @@ namespace Projekt
                 // Hvis den indeholder søgekriteriet:
                 if (line.Contains(search, StringComparison.OrdinalIgnoreCase))
                 {
-                    dataKomplet.Columns.Add("NR", 40, HorizontalAlignment.Center);
-                    dataKomplet.Columns.Add("Data", 600, HorizontalAlignment.Center);
+                    dataBoxOpstilling();
                     // Metoden fra tidligere genbrugt
                     addDataToList(line);
                 }
@@ -214,8 +218,7 @@ namespace Projekt
             {
                 counter++;
             }
-            dataKomplet.Columns.Add("NR", 40, HorizontalAlignment.Center);
-            dataKomplet.Columns.Add("Data", 600, HorizontalAlignment.Center);
+            dataBoxOpstilling();
             // Sætter dataNum til autoID værdi og -1 (Fordi det første vi gør er at +1 i vores do while løkke)
             int dataNum = autoID - 1;
             do
