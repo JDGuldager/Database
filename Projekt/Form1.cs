@@ -1,5 +1,6 @@
 using System.Data.SqlClient;
 using System.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace Projekt
 {
@@ -8,6 +9,7 @@ namespace Projekt
         // Private = Kan benyttes inden i alle metoderne i koden, også void
         private int autoID = 1;
         private int autoTwo = 30;
+        private int gangeBrugt = 0;
         private string path = @"c:\Jeppe-Leif-Nathalie-Parking\Database.txt";
         private string appendText = "";
         public Form1() //Starter GUI
@@ -24,32 +26,71 @@ namespace Projekt
             // Hvis ikke der er påbegynt en database, laver denne kode en ny fil på ovenstående destination
             if (!File.Exists(path))
             {
-                string[] createText = { "" };
-                File.WriteAllLines(path, createText);
+                // Tilføjer Brian Mørk til databasen
+                File.WriteAllText(path, "Christian, Mørk, Vedbæk Strandvej 2, 2950, Vedbæk, 50251287, cm@cmis.dk" + Environment.NewLine);
+            }
+            bool telNrExists = false;
+            bool emailExists = false;
+            string telNrCheck = telBox.Text;
+            string emailCheck = emailBox.Text;
+            // Foreach lække så den taker alle linjer som indeholder søgekriteriet, og ikke kun den første linje
+            foreach (var line in File.ReadLines(path))
+            {
+                // Hvis en af linjerne indeholder telefon nummer eller email
+                if (line.Contains(telNrCheck))
+                {
+                    telNrExists = true;
+                }
+                if (line.Contains(emailCheck))
+                {
+                    emailExists = true;
+                }
+            }
+            // Tjekker om alle de nødvendige textbokse er udfyldt, ellers gemmer den ikke informationerne
+            if (forNavnBox.Text == "" || efterNavnBox.Text == "" || adresseBox.Text == "" || postnrBox.Text == "" || byBox.Text == "" || telBox.Text == "" || emailBox.Text == "")
+            {
+                MessageBox.Show("Udfyld venligst alle nødvendige informationer");
+            }
+            // Tager højde for at alt indtastet i mobilnummer kassen er tal
+            else if (!telBox.Text.All(char.IsDigit))
+            {
+                MessageBox.Show("Mobilnummer kan kun indeholde tal");
+                telBox.Text = "";
             }
             // Tjekker om passwordet er mere eller mindre end 8 cifre
-            if (telBox.Text.Length < 8 || telBox.Text.Length > 8)
+            else if (telBox.Text.Length != 8)
             {
                 MessageBox.Show("Mobilnummer skal indeholde 8 cifre (Ingen landekoder)");
                 telBox.Text = "";
             }
-            // Tjekker om alle de nødvendige textbokse er udfyldt, ellers gemmer den ikke informationerne
-            else if (forNavnBox.Text == "" || efterNavnBox.Text == "" || adresseBox.Text == "" || postnrBox.Text == "" || byBox.Text == "" || telBox.Text == "")
+            // Hvis der var en email eller telefonnummer som eksisterede udskriver vi en fejlmeddelelse
+            else if (telNrExists == true)
             {
-                MessageBox.Show("Udfyld venligst alle nødvendige informationer");
-                clear();
+                MessageBox.Show("Dette telefonnummer er allerede registreret i databasen");
+                telBox.Text = "";
+            }
+            else if (emailExists == true)
+            {
+                MessageBox.Show("Denne email er allerede registreret i databasen");
+                emailBox.Text = "";
+            }
+            // Indbygget C# email validation tjek
+            else if (!new EmailAddressAttribute().IsValid(emailBox.Text))
+            {
+                MessageBox.Show("Denne email er ikke valid");
+                emailBox.Text = "";
             }
             else
             {
                 // Hvis der er indskrevet lejlighed nr. gemmer den brugerinformationern
                 if (lejBox.Text == "")
                 {
-                    appendText = forNavnBox.Text + ", " + efterNavnBox.Text + ", " + adresseBox.Text + ", " + postnrBox.Text + ", " + byBox.Text + ", " + telBox.Text + Environment.NewLine;
+                    appendText = forNavnBox.Text + ", " + efterNavnBox.Text + ", " + adresseBox.Text + ", " + postnrBox.Text + ", " + byBox.Text + ", " + telBox.Text + ", " + emailBox.Text + Environment.NewLine;
                 }
                 // Gemmer brugerinformationerne hvis alle de nødvendige felter er udfyldt
                 else
                 {
-                    appendText = forNavnBox.Text + ", " + efterNavnBox.Text + ", " + adresseBox.Text + ", " + lejBox.Text + ", " + postnrBox.Text + ", " + byBox.Text + ", " + telBox.Text + Environment.NewLine;
+                    appendText = forNavnBox.Text + ", " + efterNavnBox.Text + ", " + adresseBox.Text + ", " + lejBox.Text + ", " + postnrBox.Text + ", " + byBox.Text + ", " + telBox.Text + ", " + emailBox.Text + Environment.NewLine;
                 }
                 // Sender informationen til textfil
                 File.AppendAllText(path, appendText);
@@ -69,14 +110,10 @@ namespace Projekt
             lejBox.Text = "";
             telBox.Text = "";
             søgBox.Text = "";
+            emailBox.Text = "";
         }
         public void visKnap_Click(object sender, EventArgs e) //Metode til at udprinte de 0 - 15 personer til side 1 i databasen
         {
-            // Gemmer vis knappen efter den er blevet brugt og viser næste 15 knap for at undgå at brugeren laver fejl
-            visKnap.Enabled = false;
-            visKnap.Visible = false;
-            næsteKnap.Enabled = true;
-            næsteKnap.Visible = true;
             int counter = 0;
             // Indlæser alt data fra textfilen
             string[] readData = File.ReadAllLines(path);
@@ -90,10 +127,17 @@ namespace Projekt
             {
                 counter++;
             }
-            MessageBox.Show("Der er " + counter + " personer i databasen");
+            // Hvis det er første gang brugeren trykker 1-15 bliver meddelelsen om antal personer vist, anden gang bliver den ikke vist
+            if (gangeBrugt == 0)
+            {
+                MessageBox.Show("Der er " + counter + " personer i databasen");
+                this.gangeBrugt++;
+            }
+            // ændre knappens tekst efter første brug
+            visKnap.Text = "Tilbage til start";
             // tilføjer tekst og colums til den hvide databox
             dataKomplet.Columns.Add("NR", 40, HorizontalAlignment.Center);
-            dataKomplet.Columns.Add("Data", 530, HorizontalAlignment.Center);
+            dataKomplet.Columns.Add("Data", 600, HorizontalAlignment.Center);
             // this betyder at vi kan benytte os af værdien uden for void metoden
             int dataNum = 0;
 
@@ -106,6 +150,15 @@ namespace Projekt
             }
             // bliver ved indtil vi har data fra 1-15
             while (dataNum < counter && dataNum < 15);
+            if (counter > 15)
+            {
+                // Hvis der er mere end 15 brugere i databasen bliver næste knappen tilgængelig
+                // Gemmer vis knappen efter den er blevet brugt og viser næste 15 knap for at undgå at brugeren laver fejl
+                visKnap.Enabled = false;
+                visKnap.Visible = false;
+                næsteKnap.Enabled = true;
+                næsteKnap.Visible = true;
+            }
         }
         public void addDataToList(string Data) // Metode til at tilføje informationen fra filen til den hvide databox
         {
@@ -136,17 +189,19 @@ namespace Projekt
             // Clearer den hvide databox
             dataKomplet.Clear();
             // Foreach lække så den taker alle linjer som indeholder søgekriteriet, og ikke kun den første linje
-            foreach (var line in File.ReadLines(path))
+            foreach (string line in File.ReadLines(path))
             {
+                // StringComparison.OrdinalIgnoreCase gør søgekriteriet case insensitive så vi kan søge både med stort og småt
                 // Hvis den indeholder søgekriteriet:
-                if (line.Contains(search))
+                if (line.Contains(search, StringComparison.OrdinalIgnoreCase))
                 {
                     dataKomplet.Columns.Add("NR", 40, HorizontalAlignment.Center);
-                    dataKomplet.Columns.Add("Data", 530, HorizontalAlignment.Center);
+                    dataKomplet.Columns.Add("Data", 600, HorizontalAlignment.Center);
                     // Metoden fra tidligere genbrugt
                     addDataToList(line);
                 }
             }
+            søgBox.Text = "";
         }
         private void næsteKnap_Click(object sender, EventArgs e) //Metode til at trykke næste 15 personer i databasen 
         {
@@ -160,7 +215,7 @@ namespace Projekt
                 counter++;
             }
             dataKomplet.Columns.Add("NR", 40, HorizontalAlignment.Center);
-            dataKomplet.Columns.Add("Data", 530, HorizontalAlignment.Center);
+            dataKomplet.Columns.Add("Data", 600, HorizontalAlignment.Center);
             // Sætter dataNum til autoID værdi og -1 (Fordi det første vi gør er at +1 i vores do while løkke)
             int dataNum = autoID - 1;
             do

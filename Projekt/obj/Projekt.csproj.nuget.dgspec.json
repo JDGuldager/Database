@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gulda\\source\\repos\\Projekt\\Projekt\\Projekt.csproj": {}
+    "C:\\Users\\Jepp956d\\Documents\\GitHub\\Projekt\\Projekt\\Projekt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gulda\\source\\repos\\Projekt\\Projekt\\Projekt.csproj": {
+    "C:\\Users\\Jepp956d\\Documents\\GitHub\\Projekt\\Projekt\\Projekt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gulda\\source\\repos\\Projekt\\Projekt\\Projekt.csproj",
+        "projectUniqueName": "C:\\Users\\Jepp956d\\Documents\\GitHub\\Projekt\\Projekt\\Projekt.csproj",
         "projectName": "Projekt",
-        "projectPath": "C:\\Users\\gulda\\source\\repos\\Projekt\\Projekt\\Projekt.csproj",
-        "packagesPath": "C:\\Users\\gulda\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gulda\\source\\repos\\Projekt\\Projekt\\obj\\",
+        "projectPath": "C:\\Users\\Jepp956d\\Documents\\GitHub\\Projekt\\Projekt\\Projekt.csproj",
+        "packagesPath": "C:\\Users\\Jepp956d\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Jepp956d\\Documents\\GitHub\\Projekt\\Projekt\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\gulda\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Jepp956d\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,7 +60,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
