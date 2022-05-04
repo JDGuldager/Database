@@ -52,13 +52,25 @@ namespace Projekt
             {
                 MessageBox.Show("Udfyld venligst alle nødvendige informationer");
             }
+            // Tager højde for at alt indtastet i postnr kassen er tal
+            else if (!postnrBox.Text.All(char.IsDigit))
+            {
+                MessageBox.Show("Postnummer kan kun indeholde tal");
+                postnrBox.Text = "";
+            }
+            // Tjekker om postnummeret er mere eller mindre end 4 cifre
+            else if (postnrBox.Text.Length != 4)
+            {
+                MessageBox.Show("Postnummeret skal indeholde 4 cifre");
+                postnrBox.Text = "";
+            }
             // Tager højde for at alt indtastet i mobilnummer kassen er tal
             else if (!telBox.Text.All(char.IsDigit))
             {
                 MessageBox.Show("Mobilnummer kan kun indeholde tal");
                 telBox.Text = "";
             }
-            // Tjekker om passwordet er mere eller mindre end 8 cifre
+            // Tjekker om telefon nummeret er mere eller mindre end 8 cifre
             else if (telBox.Text.Length != 8)
             {
                 MessageBox.Show("Mobilnummer skal indeholde 8 cifre (Ingen landekoder)");
@@ -235,11 +247,8 @@ namespace Projekt
             if (counter == dataNum)
             {
                 MessageBox.Show("Enden af databasen");
-                // Gemmer næste knap og viser 1-15 knap
-                næsteKnap.Enabled = false;
-                næsteKnap.Visible = false;
-                visKnap.Enabled = true;
-                visKnap.Visible = true;
+                // Gemmer næste knap og viser tilbage til start knap
+                næsteKnap.Enabled = false; næsteKnap.Visible = false; visKnap.Enabled = true; visKnap.Visible = true;
             }
         }
     }
