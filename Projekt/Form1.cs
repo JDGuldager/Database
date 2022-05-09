@@ -6,10 +6,13 @@ namespace Projekt
 {
     public partial class Form1 : Form
     {
-        // Private = Kan benyttes inden i alle metoderne i koden, også void
+        // Private = Kan benyttes inde i alle metoderne i koden, også void
+        // autoID skal bruges senere i programmet til at tildele et ID til databasens brugere
         private int autoID = 1;
+        // autoTwo skal bruges til at bladre i databasen
         private int autoTwo = 30;
         private int gangeBrugt = 0;
+        //Path på vores fil med alt vores data
         private string path = @"c:\Jeppe-Leif-Nathalie-Parking\Database.txt";
         private string appendText = "";
         public Form1() //Starter GUI
@@ -23,21 +26,23 @@ namespace Projekt
             // Hvis ikke der er påbegynt en database, laver denne kode en ny fil på ovenstående destination
             if (!File.Exists(path))
             {
-                // Tilføjer Brian Mørk til databasen
-                string brianText = "Christian, Mørk, Vedbæk Strandvej 2, 2950, Vedbæk, 50251287, cm@cmis.dk"+Environment.NewLine;
-                File.WriteAllText(path, brianText);
+                // Tilføjer Christian Mørk til databasen
+                string christianText = "Christian, Mørk, Vedbæk Strandvej 2, 2950, Vedbæk, 50251287, cm@cmis.dk"+Environment.NewLine;
+                File.WriteAllText(path, christianText);
             }
         }
         private void gemKnap_Click(object sender, EventArgs e) //Metode der kører når jeg trykker på gem knappen i programmet
         {
+            // De næste to variabler skal bruges til at se om email eller mobilnummeret som brugeren indsætter allerede findes i databasen
             bool telNrExists = false;
             bool emailExists = false;
+            // Indhenter data fra programmet
             string telNrCheck = telBox.Text;
             string emailCheck = emailBox.Text;
             // Foreach løkke så den tager alle linjer som indeholder søgekriteriet, og ikke kun den første linje
             foreach (var line in File.ReadLines(path))
             {
-                // Hvis en af linjerne indeholder telefon nummer eller email
+                // Hvis en af linjerne indeholder telefon nummer eller email sættes deres variabel til true
                 if (line.Contains(telNrCheck))
                 {
                     telNrExists = true;
@@ -56,6 +61,7 @@ namespace Projekt
             else if (!postnrBox.Text.All(char.IsDigit))
             {
                 MessageBox.Show("Postnummer kan kun indeholde tal");
+                // Clearer boksen brugeren har lavet fejl i (dette bliver brugt mange gange nedenstående)
                 postnrBox.Text = "";
             }
             // Tjekker om postnummeret er mere eller mindre end 4 cifre
@@ -93,6 +99,7 @@ namespace Projekt
                 MessageBox.Show("Denne email er ikke valid");
                 emailBox.Text = "";
             }
+            // Else (alt info vi behøver er OK, og vi kan nu gemme brugeren)
             else
             {
                 // Hvis der er indskrevet lejlighed nr. gemmer den brugerinformationern
@@ -115,6 +122,7 @@ namespace Projekt
         }
         public void clear() //Metode til at clear textboxene i applicationen efter en bruger har indtastet sine oplysninger
         {
+            // Denne metode clearer alle textboksene i programmet
             forNavnBox.Text = "";
             efterNavnBox.Text = "";
             adresseBox.Text = "";
@@ -127,21 +135,23 @@ namespace Projekt
         }
         public void dataBoxOpstilling() //Metode til opstillingen af kolonnerne i databoksen
         {
-            // tilføjer tekst og colums til den hvide databox
+            // tilføjer tekst og colums til den hvide databox (Design opsætning)
             dataKomplet.Columns.Add("NR", 40, HorizontalAlignment.Center);
-            dataKomplet.Columns.Add("Data", 525, HorizontalAlignment.Center);
+            dataKomplet.Columns.Add("Data", 600, HorizontalAlignment.Center);
         }
         public void visKnap_Click(object sender, EventArgs e) //Metode til at udprinte de 0 - 15 personer til side 1 i databasen
         {
+            // sætter counter til 0 hver eneste gang vi bruger knappen
             int counter = 0;
             // Indlæser alt data fra textfilen
             string[] readData = File.ReadAllLines(path);
             // Sætter autoID og autoTwo til deres originale værdier så brugeren kan benytte sig af 0-15 personer knappen igen og igen
+            //this betyder at variablen kan eksistere uden for void metoden, alle metoderne kan benytte sig af de to variabler uden at de skal defineres igen
             this.autoID = 1;
             this.autoTwo = 30;
-            // Clearer den hvide datakasse for info
+            // Clearer den hvide datakasse for data så vi kan indsætte ny data
             dataKomplet.Clear();
-            // Læser hvor mange linjer der er i filen
+            // Løkken læser hvor mange linjer der er i filen og giver counter +1 for hver linje
             foreach (string line in File.ReadLines(path))
             {
                 counter++;
@@ -149,15 +159,15 @@ namespace Projekt
             // Hvis det er første gang brugeren trykker 1-15 bliver meddelelsen om antal personer vist, anden gang bliver den ikke vist
             if (gangeBrugt == 0)
             {
+                //Udskriver antal brugere i databasen ved hjælp af counter
                 MessageBox.Show("Der er " + counter + " personer i databasen");
                 this.gangeBrugt++;
             }
             // ændre knappens tekst efter første brug
-            visKnap.Text = "Tilbage til start";
+            visKnap.Text = "Opdater";
+            // Benytter metoden til opstilling af dataen
             dataBoxOpstilling();
-            // this betyder at vi kan benytte os af værdien uden for void metoden
             int dataNum = 0;
-
             do
             {
                 // Benytter mig af nedenstående metode
@@ -171,10 +181,7 @@ namespace Projekt
             {
                 // Hvis der er mere end 15 brugere i databasen bliver næste knappen tilgængelig
                 // Gemmer vis knappen efter den er blevet brugt og viser næste 15 knap for at undgå at brugeren laver fejl
-                visKnap.Enabled = false;
-                visKnap.Visible = false;
-                næsteKnap.Enabled = true;
-                næsteKnap.Visible = true;
+                visKnap.Enabled = false; visKnap.Visible = false; næsteKnap.Enabled = true; næsteKnap.Visible = true;
             }
         }
         public void addDataToList(string Data) // Metode til at tilføje informationen fra filen til den hvide databox
@@ -195,10 +202,9 @@ namespace Projekt
         private void søgKnap_Click(object sender, EventArgs e) // Metode til når vi trykker på 'Søg'
         {
             // Gemmer næste knap og viser 1-15 knap
-            næsteKnap.Enabled = false;
-            næsteKnap.Visible = false;
-            visKnap.Enabled = true;
-            visKnap.Visible = true;
+            næsteKnap.Enabled = false; næsteKnap.Visible = false; visKnap.Enabled = true; visKnap.Visible = true;
+            // Sætter knappens text tilbage til dens originale text
+            visKnap.Text = "Vis brugere 1-15";
             // Definerer search som det brugeren har indtastet i tekstboksen
             string search = søgBox.Text;
             // Sætter ID til 1 så vi kan se hvor mange resultater vi får
@@ -217,19 +223,21 @@ namespace Projekt
                     addDataToList(line);
                 }
             }
-            søgBox.Text = "";
         }
         private void næsteKnap_Click(object sender, EventArgs e) //Metode til at trykke næste 15 personer i databasen 
         {
+            //Indlæser filens data
             string[] readData = File.ReadAllLines(path);
+            // Vi benytter os igen af samme counter som tidligere den starter fra 0 igen
             int counter = 0;
-            // Clear den hvide databox
+            // Clearer den hvide databox
             dataKomplet.Clear();
-            // Vi antager at brugeren har trykket 0-15 først, så vi sætter ikke vores værdier tilbage
+            // Vi antager at brugeren har trykket 1-15 først, så vi sætter ikke vores auto variabler tilbage til 1 og 30
             foreach (string line in File.ReadLines(path))
             {
                 counter++;
             }
+            //Design metoden
             dataBoxOpstilling();
             // Sætter dataNum til autoID værdi og -1 (Fordi det første vi gør er at +1 i vores do while løkke)
             int dataNum = autoID - 1;
@@ -249,6 +257,8 @@ namespace Projekt
                 MessageBox.Show("Enden af databasen");
                 // Gemmer næste knap og viser tilbage til start knap
                 næsteKnap.Enabled = false; næsteKnap.Visible = false; visKnap.Enabled = true; visKnap.Visible = true;
+                //Ændre teksten på knappen til tilbage til start når enden af databasen er nået
+                visKnap.Text = "Tilbage til start";
             }
         }
     }
